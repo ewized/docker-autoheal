@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./docker/alpine/stable/docker-autoheal.dockerfile
+          file: ./Dockerfile
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
