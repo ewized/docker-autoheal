@@ -16,6 +16,7 @@ pub struct VariablesList {
     pub webhook_url: String,
     pub post_action: String,
     pub log_all: bool,
+    pub autoheal_monitor: String,
     pub monitor_all: bool,
     pub log_persist: bool,
 }
@@ -93,6 +94,7 @@ pub async fn get_var(opt: OptionsList) -> VariablesList {
     if opt.log_all {
         autoheal_log_all = true;
     }
+    let autoheal_monitor = get_env("AUTOHEAL_MONITOR", "true");
     let mut autoheal_monitor_all = get_env("AUTOHEAL_MONITOR_ALL", "false") == "true";
     if opt.monitor_all {
         autoheal_monitor_all = true
@@ -182,6 +184,7 @@ pub async fn get_var(opt: OptionsList) -> VariablesList {
         webhook_url: autoheal_webhook_url,
         post_action: autoheal_post_action,
         log_all: autoheal_log_all,
+        autoheal_monitor,
         monitor_all: autoheal_monitor_all,
         log_persist: autoheal_log_persist,
     }

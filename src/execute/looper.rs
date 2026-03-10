@@ -51,6 +51,7 @@ pub async fn start_loop(
             let webhook_key = var.webhook_key.clone();
             let webhook_url = var.webhook_url.clone();
             let post_action = var.post_action.clone();
+            let autoheal_monitor = var.autoheal_monitor.clone();
             let log_all = var.log_all;
             let monitor_all = var.monitor_all;
             let log_ready = var.log_ready;
@@ -72,7 +73,7 @@ pub async fn start_loop(
             let s = "autoheal.monitor.enable".to_string();
             let autoheal_monitor_enable = match container.labels {
                 Some(ref label) => match label.get(&s) {
-                    Some(v) => v.parse().unwrap_or(monitor_all),
+                    Some(v) => v.to_lowercase() == autoheal_monitor,
                     None => monitor_all,
                 },
                 None => monitor_all,

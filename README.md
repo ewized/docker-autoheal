@@ -29,6 +29,7 @@ The `docker-autoheal` binary may be executed in a native OS or from a Docker con
 | **AUTOHEAL_START_DELAY**     | 0                        | Wait `n` seconds before first health check            |
 | **AUTOHEAL_POST_ACTION**     |                          | The absolute path of an executable to be run after restart attempts; container `name`, `id` and `stop-timeout` are passed as arguments in that order                                                              |
 | **AUTOHEAL_MONITOR_ALL**     | FALSE                    | Set to `TRUE` to simply monitor all containers on the host or leave as `FALSE` and control via `autoheal.monitor.enable` |
+| **AUTOHEAL_MONITOR**         | TRUE                     | Value required in `autoheal.monitor.enable` labels for monitoring when `AUTOHEAL_MONITOR_ALL` is not set to `TRUE` |
 | **AUTOHEAL_LOG_ALL**         | FALSE                    | Allow (`TRUE`/`FALSE`) logging (and webhook/apprise if set) for containers with `autostart.restart.enable=FALSE`          |
 | **AUTOHEAL_LOG_PERSIST**     | FALSE                    | Allow (`TRUE`/`FALSE`) external persistent logging and reporting of historical data   |
 | **AUTOHEAL_TCP_HOST**        | localhost                | Address of Docker host                                |
@@ -44,7 +45,7 @@ The `docker-autoheal` binary may be executed in a native OS or from a Docker con
 | Label                        | Default | Description                                                                                                                                 |
 |:----------------------------:|:-------:|:-------------------------------------------------------------------------------------------------------------------------------------------:|
 | **autoheal.stop.timeout**    |         | Per container override (in seconds) of `AUTOHEAL_STOP_TIMEOUT` during restart (e.g. Some container routinely takes longer to cleanly exit)  |
-| **autoheal.monitor.enable**  | FALSE   | Per container override (true/false) to control if should be monitored (e.g. If you have a large number of containers that you wish to monitor and restart, apply this label as `FALSE` to the few that you do not wish to monitor and set `AUTOHEAL_MONITOR_ALL` to `TRUE`)                                                                                  |
+| **autoheal.monitor.enable**  | N/A    | Per container override label value must match `AUTOHEAL_MONITOR` to enable monitoring (e.g. set `autoheal.monitor.enable=foo` and `AUTOHEAL_MONITOR=foo`) |
 | **autoheal.restart.enable**  | TRUE    | Per container override (true/false) to control if should restart on unhealthy (e.g. If you have a large number of containers that you wish to monitor and restart, apply this label as `FALSE` to the few that you do not wish to restart and set `AUTOHEAL_MONITOR_ALL` to `TRUE`)                                                                       |
 
 ### Binary Options
@@ -131,7 +132,7 @@ docker run -d --read-only \
     tmknight88/docker-autoheal:latest
 ```
 
-Will connect to the Docker host via hostname or IP and the specified port, monitor only containers with a label `autoheal.monitor.enable=true`, and write persistent log data to `/opt/docker-autoheal/log.json` as the user with the specified `uid:gid`
+Will connect to the Docker host via hostname or IP and the specified port, monitor only containers with a label `autoheal.monitor.enable=$AUTOHEAL_MONITOR`, and write persistent log data to `/opt/docker-autoheal/log.json` as the user with the specified `uid:gid`
 
 ### Logging
 
@@ -176,7 +177,7 @@ Find all occurrences of 'privoxy' and group by container id
 
 ### Docker Labels
 
-a) Apply the label `autoheal.monitor.enable=true` to your container to have it watched
+a) Apply the label `autoheal.monitor.enable=<value>` to your container, where `<value>` matches `AUTOHEAL_MONITOR` (default `true`) to have it watched
 
 OR
 
